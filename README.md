@@ -43,10 +43,10 @@ The login form requires two properties to be bound to the model: `username` and 
     <script type="text/x-handlebars" data-template-name="login">
         <form {{action login on='submit'}}>
             <label for="username">Username</label>
-                {{input id='username' placeholder='Enter Username' class='form-control' value=username}}
-                <label for="password">Password</label>
-                {{input id='password' placeholder='Enter Password' class='form-control' type='password' value=password}}
-                <button type="submit" class="btn btn-default">Login</button>
+            {{input id='username' placeholder='Enter Username' class='form-control' value=username}}
+            <label for="password">Password</label>
+            {{input id='password' placeholder='Enter Password' class='form-control' type='password' value=password}}
+            <button type="submit" class="btn btn-default">Login</button>
         </form>
         {{#if error}}
             <div class="alert alert-error">{{error.message}}</div>
