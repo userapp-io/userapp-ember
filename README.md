@@ -72,6 +72,8 @@ The signup form requires a `username` and `password`. All input field names must
 
 When an error occurs the `error` object will contain more information about it.
 
+Use the option `usernameIsEmail` (see *Configuration*) to specify that the username also should be used as the email.
+
 **Set up your routes**
 
 The application route should extend `Ember.UserApp.ApplicationRouteMixin`. Login and signup routes should extend `Ember.UserApp.FormControllerMixin`. And all protected routes should extend `Ember.UserApp.ProtectedRouteMixin`.
@@ -106,6 +108,31 @@ To let your users sign up and log in with their social accounts, use the `oauth`
     <a href="#" {{ action 'oauth' 'google' }}>Log in with Google</a>
 
 But first you need to activate the providers in UserApp, read more about it here: <https://app.userapp.io/#/docs/concepts/#social-login>
+
+## Configuration
+
+    Ember.Application.initializer({
+        name: 'userapp',
+        initialize: function(container, application) {
+            Ember.UserApp.setup(application, { 
+                appId: '52b8a5d2dca15',
+                loginRoute: 'login',
+                indexRoute: 'index',
+                heartbeatInterval: 20000,
+                usernameIsEmail: false
+            });
+        }
+    });
+
+* `appId` (required): Your UserApp [App Id](https://help.userapp.io/customer/portal/articles/1322336-how-do-i-find-my-app-id-).
+
+* `loginRoute`: The name of the route to transition to when not logged in or logging out. Defaults to `'login'`.
+
+* `indexRoute`: The name of the route to transition to after login. Defaults to `'index'`.
+
+* `heartbeatInterval`: Milliseconds between each heartbeat that validates the user's session token and keeps it alive. Default is `20000` (20 seconds).
+
+* `usernameIsEmail`: If true, the username field will also be used set as the email when signing up a new user. Defaults to `false`.
 
 ## Example
 

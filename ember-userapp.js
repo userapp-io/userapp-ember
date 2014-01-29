@@ -24,14 +24,18 @@
   });
 
   Ember.UserApp = Ember.Namespace.create({
-    loginRoute: 'login',
     indexRoute: 'index',
+    loginRoute: 'login',
+    appId: null,
+    heartbeatInterval: 20000,
+    usernameIsEmail: false,
     setup: function(application, options) {
       options = options || {};
       this.indexRoute = options.indexRoute || this.indexRoute;
       this.loginRoute = options.loginRoute || this.loginRoute;
       this.appId = options.appId;
-      this.heartBeatInterval = options.heartBeatInterval || 20000;
+      this.heartbeatInterval = options.heartbeatInterval || this.heartbeatInterval;
+      this.usernameIsEmail = options.usernameIsEmail || this.usernameIsEmail;
 
       UserApp.initialize({ appId: this.appId });
 
@@ -114,6 +118,11 @@
       var self = this;
       return new Ember.RSVP.Promise(function(resolve, reject) {
         user.login = user.username;
+
+        if (Ember.UserApp.usernameIsEmail) {
+          user.email = user.username;
+        }
+
         UserApp.User.save(user, function(error, result) {
             if (!error) {
               resolve();
@@ -170,7 +179,7 @@
     },
     setup: function(user, route) {
       UserApp.setToken(user.token);
-      this.startHeartbeat(Ember.UserApp.heartBeatInterval);
+      this.startHeartbeat(Ember.UserApp.heartbeatInterval);
       Kaka.set('ua_session_token', user.token);
       this.setProperties({
         authenticated: true,
