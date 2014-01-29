@@ -36,7 +36,7 @@ Add this code above `App = Ember.Application.create();` in *app.js* with your [A
 
 **Create the login and signup templates**
 
-Use the actions `login` and `signup` to attach to the forms to the UserApp API.
+Use the actions `login` and `signup` to attach the forms to the UserApp API.
 
 The login form requires two properties to be bound to the model: `username` and `password`.
 
@@ -115,7 +115,7 @@ But first you need to activate the providers in UserApp, read more about it here
         name: 'userapp',
         initialize: function(container, application) {
             Ember.UserApp.setup(application, { 
-                appId: '52b8a5d2dca15',
+                appId: 'YOUR-USERAPP-APP-ID',
                 loginRoute: 'login',
                 indexRoute: 'index',
                 heartbeatInterval: 20000,
