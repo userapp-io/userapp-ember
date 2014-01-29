@@ -152,7 +152,7 @@ See [example/](https://github.com/userapp-io/userapp-ember/tree/master/example) 
 
 ## Back-end
 
-To connect your Ember.js app to a back-end API, perform the AJAX requests on the same domain. And then on the back-end, get the cookie `ua_session_cookie` and use UserApp's [token.heartbeat()](https://app.userapp.io/#/docs/token/#heartbeat) or [user.get()](https://app.userapp.io/#/docs/user/#get) to verify that the user is authenticated. The result should then be cached to reduce round-trips to UserApp.
+To connect your Ember.js app to a back-end API, perform the AJAX requests on the same domain. And then on the back-end, get the cookie `ua_session_token` and use UserApp's [token.heartbeat()](https://app.userapp.io/#/docs/token/#heartbeat) or [user.get()](https://app.userapp.io/#/docs/user/#get) to verify that the user is authenticated. The result should then be cached to reduce round-trips to UserApp.
 
 ## Help
 
