@@ -128,19 +128,35 @@ But first you need to activate the providers in UserApp, read more about it here
 
 * `loginRoute`: The name of the route to transition to when not logged in or logging out. Defaults to `'login'`.
 
-* `indexRoute`: The name of the route to transition to after login. Defaults to `'index'`.
+* `indexRoute`: The name of the route to transition to after login or signup. Defaults to `'index'`.
 
 * `heartbeatInterval`: Milliseconds between each heartbeat that validates the user's session token and keeps it alive. Default is `20000` (20 seconds).
 
-* `usernameIsEmail`: If true, the username field will also be used set as the email when signing up a new user. Defaults to `false`.
+* `usernameIsEmail`: If `true`, the username field will also be used as the email when signing up a new user. Defaults to `false`.
+
+## Social Login (OAuth)
+
+Add this to a link tag in order to authenticate using an OAuth provider. The value should be an OAuth provider id such as `google`, `github`, `facebook` or `linkedin`. *Additionally:* Use the `error` property for error handling (see the signup and login forms). The scopes to request from the OAuth provider must be a comma-separated list of scopes, i.e. `user,user:email`. If not specified, the default scopes from UserApp will be used. Set the `redirect_uri` to explicitly specify the URI to be redirected to after provider has performed authentication. If not specified, the default URI will be `/#/oauth/callback/`.
+
+    <a href="#" {{ action 'oauth' <provider_id> <scopes> <redirect_uri> }}>Log in with your social account</a>
+
+**Example:**
+
+    <a href="#" {{ action 'oauth' 'facebook' }}>Log in with Facebook</a>
+
+[Read more about how to use *Social Login*/OAuth with UserApp.](https://app.userapp.io/#/docs/concepts/#social-login)
 
 ## Example
 
 See [example/](https://github.com/userapp-io/userapp-ember/tree/master/example) for a demo app based on the Ember Starter Kit and Bootstrap.
 
+## Back-end
+
+To connect your Ember.js app to a back-end API, perform the AJAX requests on the same domain. And then on the back-end, get the cookie `ua_session_cookie` and use UserApp's [token.heartbeat()](https://app.userapp.io/#/docs/token/#heartbeat) or [user.get()](https://app.userapp.io/#/docs/user/#get) to verify that the user is authenticated. The result should then be cached to reduce round-trips to UserApp.
+
 ## Help
 
-Contact us via email at support@userapp.io or visit our [support center](https://help.userapp.io).
+Contact us via email at support@userapp.io or visit our [support center](https://help.userapp.io). You can also see the [UserApp documentation](https://app.userapp.io/#/docs/) for more information.
 
 ## License
 
