@@ -1,7 +1,7 @@
 Ember.Application.initializer({
   name: 'userapp',
   initialize: function(container, application) {
-  	Ember.UserApp.setup(application, { appId: '52b8a5d2dca15' });
+  	Ember.UserApp.setup(application, { appId: 'YOUR-USERAPP-APP-ID' });
   }
 });
 
