@@ -25,7 +25,7 @@ Be sure to add them before your *app.js* file.
         }
     });
 
-**Create routes for login and signup**
+**Create routes for login and signup:**
 
     App.Router.map(function() {
         this.route('login');
