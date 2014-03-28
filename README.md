@@ -12,7 +12,7 @@ Ember.js module that adds user authentication to your app with [UserApp](https:/
 Include the [UserApp JavaScript library](https://app.userapp.io/#/docs/libs/javascript/) and this Ember module in your *index.html*. Be sure to add them before your *app.js* file.
 
     <script src="https://app.userapp.io/js/userapp.client.js"></script>
-    <script src="https://rawgithub.com/userapp-io/userapp-ember/master/ember-userapp.js"></script>
+    <script src="https://app.userapp.io/js/ember-userapp.js"></script>
 
 (You can also install the module with bower: `$ bower install userapp-ember`)
 
