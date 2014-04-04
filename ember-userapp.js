@@ -102,12 +102,20 @@
       return new Ember.RSVP.Promise(function(resolve, reject) {
         UserApp.User.login({ login: credentials.username, password: credentials.password }, function(error, result) {
           if (!error) {
-            self.load().then(function(user) {
-              user.token = result.token;
-              resolve(user);
-            }, function(error) {
-              reject(error);
-            });
+            if (result.locks && result.locks.indexOf('EMAIL_NOT_VERIFIED') > -1) {
+              UserApp.setToken(null);
+              reject({ name: 'EMAIL_NOT_VERIFIED', message: 'Please verify your email address by clicking on the link in the verification email that we\'ve sent you.' });
+            } else if (result.locks && result.locks.length > 0) {
+              UserApp.setToken(null);
+              reject({ name: 'LOCKED', message: 'Your account has been locked.' });
+            } else {
+              self.load().then(function(user) {
+                user.token = result.token;
+                resolve(user);
+              }, function(error) {
+                reject(error);
+              });
+            }
           } else {
             reject(error);
           }
@@ -125,7 +133,11 @@
 
         UserApp.User.save(user, function(error, result) {
             if (!error) {
-              resolve();
+              if (result.locks && result.locks.length > 0 && result.locks[0].type == 'EMAIL_NOT_VERIFIED') {
+                  reject({ name: 'EMAIL_NOT_VERIFIED', message: 'Please verify your email address by clicking on the link in the verification email that we\'ve sent you.' });
+              } else {
+                  resolve();
+              }
             } else {
               reject(error);
             }
@@ -282,21 +294,34 @@
       login: function() {
         var self = this;
         var credentials = this.getProperties('username', 'password');
+
+        if (self.get('loading') == true) {
+          return;
+        }
+
         self.set('error', null);
         self.get('user').reset();
 
         if (!Ember.isEmpty(credentials.username) && !Ember.isEmpty(credentials.password)) {
-          this.set('password', null);
-          this.get('user').login(credentials).then(function(user) {
+          self.set('loading', true);
+          self.set('password', null);
+          self.get('user').login(credentials).then(function(user) {
             self.send('loginSucceeded', user);
+            self.set('loading', false);
           }, function(error) {
             self.set('error', error);
+            self.set('loading', false);
           });
         }
       },
       signup: function() {
         var self = this;
         var user = {};
+
+        if (self.get('loading') == true) {
+          return;
+        }
+
         self.set('error', null);
         self.get('user').reset();
 
@@ -307,16 +332,25 @@
         }
 
         if (!Ember.isEmpty(user.username) && !Ember.isEmpty(user.password)) {
-          this.set('password', null);
-          this.get('user').signup(user).then(function() {
+          self.set('loading', true);
+          self.set('password', null);
+          self.get('user').signup(user).then(function() {
             self.send('signupSucceeded', user);
+            self.set('loading', false);
           }, function(error) {
             self.set('error', error);
+            self.set('loading', false);
           });
         }
       },
       oauth: function(providerId, scopes, redirectUri) {
+        var self = this;
+        
         if (!providerId) {
+          return;
+        }
+
+        if (self.get('loading') == true) {
           return;
         }
 
@@ -324,11 +358,14 @@
         var defaultRedirectUrl = window.location.protocol+'//'+window.location.host+window.location.pathname+'#/oauth/callback/';
         var redirectUri = redirectUri || defaultRedirectUrl;
 
+        self.set('loading', true);
+
         UserApp.OAuth.getAuthorizationUrl({ provider_id: providerId, redirect_uri: redirectUri, scopes: scopes }, function(error, result) {
             if (error) {
-                self.set('error', error);
+              self.set('error', error);
+              self.set('loading', false);
             } else {
-                window.location.href = result.authorization_url;
+               window.location.href = result.authorization_url;
             }
         });
       }

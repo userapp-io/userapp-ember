@@ -50,7 +50,13 @@
         {{input id='username' placeholder='Username' class='form-control' value=username}}
         {{input id='password' placeholder='Password' class='form-control' type='password' value=password}}
       </div>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">
+        {{#if loading}}
+          <img src="https://app.userapp.io/img/ajax-loader-transparent.gif">
+        {{else}}
+          Sign Up
+        {{/if}}
+      </button>
       {{#if error}}
         <div class="alert alert-error">{{error.message}}</div>
       {{/if}}
@@ -64,7 +70,13 @@
         {{input id='username' placeholder='Username' class='form-control' value=username}}
         {{input id='password' placeholder='Password' class='form-control' type='password' value=password}}
       </div>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">
+        {{#if loading}}
+          <img src="https://app.userapp.io/img/ajax-loader-transparent.gif">
+        {{else}}
+          Log In
+        {{/if}}
+      </button>
       {{#if error}}
         <div class="alert alert-error">{{error.message}}</div>
       {{/if}}
