@@ -178,8 +178,8 @@ All forms sets the variable `loading` to `true` while it's doing work in the bac
 
 ```html
 <form class="form" {{action login on='submit'}}>
-    {{input id='username' placeholder='Email' class='form-control' value=username}}
-    {{input id='password' placeholder='Password' class='form-control' type='password' value=password}}
+    {{input id='username' placeholder='Email' value=username}}
+    {{input id='password' placeholder='Password' type='password' value=password}}
     <button type="submit">
         {{#if loading}}
             <img src="https://app.userapp.io/img/ajax-loader-transparent.gif">
