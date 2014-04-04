@@ -177,7 +177,7 @@ Add this to a link tag in order to authenticate using an OAuth provider. The val
 All forms sets the variable `loading` to `true` while it's doing work in the background. This way you could show a loader animation while waiting for the UserApp API to respond. Here's an example with the login form:
 
 ```html
-<form class="form" {{action login on='submit'}}>
+<form {{action login on='submit'}}>
     {{input id='username' placeholder='Email' value=username}}
     {{input id='password' placeholder='Password' type='password' value=password}}
     <button type="submit">
