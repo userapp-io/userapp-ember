@@ -1,6 +1,6 @@
 {
 	"name": "userapp-ember",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"main": "./ember-userapp.js",
 	"dependencies": {
 		"userapp": "latest"

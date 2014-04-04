@@ -350,9 +350,14 @@
           for(var i=0;i<data.length;++i){
                   var segments = data[i].split("=", 2);
                   if(segments.length == 2){
-                      if (!cookies[decodeComponent(segments[0])]) {
-                          cookies[decodeComponent(segments[0])] = decodeComponent(segments[1]);
+                      var decoded = "";
+                      try {
+                          decoded = decodeComponent(segments[1]);
+                      } catch(e) {
+                          decoded = segments[1];
                       }
+                      
+                      cookies[decodeComponent(segments[0])] = decoded;
                   }
           }
 
