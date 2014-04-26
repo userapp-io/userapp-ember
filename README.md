@@ -193,6 +193,12 @@ All forms sets the variable `loading` to `true` while it's doing work in the bac
 </form>
 ```
 
+## PhoneGap
+
+This module works perfectly out of the box with [PhoneGap](http://phonegap.com/). 
+But if you want persistent sessions (like the Facebook, Twitter, and Instagram apps has), you need to include [userapp-phonegap](https://github.com/userapp-io/userapp-phonegap) into your project.
+It will automatically extend the Ember.js module with functionality that sets up persistent sessions.
+
 ## Example
 
 See [example/](https://github.com/userapp-io/userapp-ember/tree/master/example) for a demo app based on the Ember Starter Kit and Bootstrap.

@@ -110,8 +110,19 @@
               reject({ name: 'LOCKED', message: 'Your account has been locked.' });
             } else {
               self.load().then(function(user) {
-                user.token = result.token;
-                resolve(user);
+                if (UserApp.setupPersistentToken) {
+                  UserApp.setupPersistentToken(function(error, token) {
+                    if (token) {
+                      user.token = token.value;
+                      resolve(user);
+                    } else {
+                      reject(error);
+                    }
+                  });
+                } else {
+                  user.token = result.token;
+                  resolve(user);
+                }
               }, function(error) {
                 reject(error);
               });
@@ -189,6 +200,15 @@
 
       return true;
     },
+    token: function(value) {
+      if (value) {
+        UserApp.setToken(value);
+        this.get('current').token = value;
+        Cookies.set('ua_session_token', value, { expires: new Date(new Date().getTime() + 31536000000) });
+      }
+
+      return this.get('current').token;
+    },
     setup: function(user, route) {
       UserApp.setToken(user.token);
       this.startHeartbeat(Ember.UserApp.heartbeatInterval);
@@ -216,11 +236,14 @@
       var self = this;
       var token = Cookies.get('ua_session_token');
       var user = this.get('user');
+      var tokenFromQueryString = false;
 
       if (window.location.hash) {
         var matches = window.location.hash.match(/ua_token=([a-z0-9_\-]+)/i);
         if (matches && matches.length == 2) {
           token = matches[1];
+          window.location.hash = window.location.hash.replace(/ua_token=([a-z0-9_\-]+)/i, '');
+          tokenFromQueryString = true;
         }
       }
 
@@ -230,7 +253,17 @@
           user.load().then(function(usr) {
             usr.token = token;
             user.set('current', usr);
-            resolve();
+
+            if (tokenFromQueryString && UserApp.setupPersistentToken) {
+              UserApp.setupPersistentToken(function(error, token) {
+                if (token) {
+                  user.token(token.value);
+                }
+                resolve();
+              });
+            } else {
+              resolve();
+            }
           }, function(error) {
             resolve();
           });
@@ -261,11 +294,18 @@
       },
       logout: function() {
         var self = this;
-        this.get('user').logout().then(function() {
-          self.send('logoutSucceeded');
-        }, function(error) {
-          self.send('logoutSucceeded');
-        });
+
+        if (UserApp.removePersistentToken) {
+          UserApp.removePersistentToken(function(error) {
+            self.send('logoutSucceeded');
+          });
+        } else {
+          this.get('user').logout().then(function() {
+            self.send('logoutSucceeded');
+          }, function(error) {
+            self.send('logoutSucceeded');
+          });
+        }
       },
       logoutSucceeded: function() {
         var self = this;
@@ -355,7 +395,7 @@
         }
 
         var scopes = scopes ? scopes.split(',') : null;
-        var defaultRedirectUrl = window.location.protocol+'//'+window.location.host+window.location.pathname+'#/oauth/callback/';
+        var defaultRedirectUrl = window.location.protocol+'//'+window.location.host+window.location.pathname+'#/';
         var redirectUri = redirectUri || defaultRedirectUrl;
 
         self.set('loading', true);
