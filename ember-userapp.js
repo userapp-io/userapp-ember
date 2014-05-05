@@ -1,4 +1,20 @@
 (function() {
+  /**
+   * Token storage, default is in a cookie. The PhoneGap integration will override this
+   * to store the token in localStorage instead.
+   */
+  UserApp.tokenStorage || (UserApp.tokenStorage = {
+    get: function() {
+      return Cookies.get('ua_session_token');
+    },
+    set: function(token) {
+      Cookies.set('ua_session_token', token, { expires: new Date(new Date().getTime() + 31536000000) });
+    },
+    remove: function() {
+      Cookies.expire('ua_session_token');
+    }
+  });
+
   Ember.Handlebars.registerHelper('has-permission', function(permissions, options) {
     if (options.data.view.renderedName == 'application') {
       Ember.UserApp.resetAtLogin = true;
@@ -204,7 +220,7 @@
       if (value) {
         UserApp.setToken(value);
         this.get('current').token = value;
-        Cookies.set('ua_session_token', value, { expires: new Date(new Date().getTime() + 31536000000) });
+        UserApp.tokenStorage.set(value);
       }
 
       return this.get('current').token;
@@ -212,7 +228,7 @@
     setup: function(user, route) {
       UserApp.setToken(user.token);
       this.startHeartbeat(Ember.UserApp.heartbeatInterval);
-      Cookies.set('ua_session_token', user.token, { expires: new Date(new Date().getTime() + 31536000000) });
+      UserApp.tokenStorage.set(user.token);
       this.setProperties({
         authenticated: true,
         current: user,
@@ -222,7 +238,7 @@
     reset: function() {
       this.stopHeartbeat();
       UserApp.setToken(null);
-      Cookies.expire('ua_session_token');
+      UserApp.tokenStorage.remove();
       this.setProperties({
         authenticated: false,
         current: null,
@@ -234,7 +250,7 @@
   Ember.UserApp.ApplicationRouteMixin = Ember.Mixin.create({
     beforeModel: function(transition) {
       var self = this;
-      var token = Cookies.get('ua_session_token');
+      var token = UserApp.tokenStorage.get();
       var user = this.get('user');
       var tokenFromQueryString = false;
 

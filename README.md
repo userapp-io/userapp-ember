@@ -193,6 +193,10 @@ All forms sets the variable `loading` to `true` while it's doing work in the bac
 </form>
 ```
 
+## Back-end
+
+To connect your Ember.js app to a back-end API, perform the AJAX requests on the same domain. And then on the back-end, get the cookie `ua_session_token` and use UserApp's [token.heartbeat()](https://app.userapp.io/#/docs/token/#heartbeat) or [user.get()](https://app.userapp.io/#/docs/user/#get) to verify that the user is authenticated. The result should then be cached to reduce round-trips to UserApp.
+
 ## PhoneGap
 
 This module works perfectly out of the box with [PhoneGap](http://phonegap.com/). 
@@ -202,10 +206,6 @@ It will automatically extend the Ember.js module with functionality that sets up
 ## Example
 
 See [example/](https://github.com/userapp-io/userapp-ember/tree/master/example) for a demo app based on the Ember Starter Kit and Bootstrap.
-
-## Back-end
-
-To connect your Ember.js app to a back-end API, perform the AJAX requests on the same domain. And then on the back-end, get the cookie `ua_session_token` and use UserApp's [token.heartbeat()](https://app.userapp.io/#/docs/token/#heartbeat) or [user.get()](https://app.userapp.io/#/docs/user/#get) to verify that the user is authenticated. The result should then be cached to reduce round-trips to UserApp.
 
 ## Help
 
