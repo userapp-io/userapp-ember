@@ -3,7 +3,17 @@ UserApp Ember.js
 
 Ember.js module that adds user authentication to your app with [UserApp](https://www.userapp.io/). It supports protected/public routes, rerouting on login/logout, heartbeats for status checks, stores the session token in a cookie, components for signup/login/logout, OAuth, etc.
 
-*UserApp is a cloud-based user management API for web apps with the purpose to relieve developers from having to program logic for user authentication, sign-up, invoicing, feature/property/permission management, and more.*
+*UserApp is a cloud-based user management API for web & mobile apps with the purpose to relieve developers from having to program logic for user authentication, sign-up, invoicing, feature/property/permission management, and more.*
+
+* [Getting Started](#getting-started)
+* [Configuration](#configuration)
+* [Social Login (OAuth)](#social-login-oauth)
+* [Loaders](#loaders)
+* [Back-end](#back-end)
+* [PhoneGap](#phonegap)
+* [Example](#example)
+* [Help](#help)  
+* [License](#license)
 
 ## Getting Started
 
