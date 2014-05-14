@@ -195,7 +195,19 @@ All forms sets the variable `loading` to `true` while it's doing work in the bac
 
 ## Back-end
 
-To connect your Ember.js app to a back-end API, perform the AJAX requests on the same domain. And then on the back-end, get the cookie `ua_session_token` and use UserApp's [token.heartbeat()](https://app.userapp.io/#/docs/token/#heartbeat) or [user.get()](https://app.userapp.io/#/docs/user/#get) to verify that the user is authenticated. The result should then be cached to reduce round-trips to UserApp.
+Since Ember.js is a front-end framework, all authentication with this module is only done on the client-side, with direct communication with UserApp.
+
+To authorize to your back-end API, you need to provide the session token that was created at login. This token can then be validated against UserApp on the server-side to ensure that the user is authenticated.
+
+If your API/back-end is on the same domain as your Ember app, you can simply get the token from the cookie named `ua_session_token`. If it's not on the same domain, you need to manually provide it with your back-end requests. One solution is to include it with your GET/POST parameters. Another is to use the Authorization header.
+
+Use the `token()` method on the `user` object to obtain the token.
+
+```javascript
+var token = this.get('user').token();
+```
+
+On the back-end, use UserApp's [token.heartbeat()](https://app.userapp.io/#/docs/token/#heartbeat) or [user.get()](https://app.userapp.io/#/docs/user/#get) to verify that the token is valid. The result should then be cached to reduce round-trips to UserApp.
 
 ## PhoneGap
 
