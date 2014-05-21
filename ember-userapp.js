@@ -149,6 +149,30 @@
         });
       });
     },
+    loginWithToken: function(token) {
+      var self = this;
+      return new Ember.RSVP.Promise(function(resolve, reject) {
+        UserApp.setToken(token);
+
+        self.load().then(function(user) {
+          if (UserApp.setupPersistentToken) {
+            UserApp.setupPersistentToken(function(error, token) {
+              if (token) {
+                user.token = token.value;
+                resolve(user);
+              } else {
+                reject(error);
+              }
+            });
+          } else {
+            user.token = result.token;
+            resolve(user);
+          }
+        }, function(error) {
+          reject(error);
+        });
+      });
+    },
     signup: function(user) {
       var self = this;
       return new Ember.RSVP.Promise(function(resolve, reject) {
@@ -414,6 +438,13 @@
         var defaultRedirectUrl = window.location.protocol+'//'+window.location.host+window.location.pathname+'#/';
         var redirectUri = redirectUri || defaultRedirectUrl;
 
+        // PhoneGap/iOS fix
+        if (window.device && window.device.platform == 'iPhone') {
+          if (redirectUri.indexOf('file://') == 0) {
+            redirectUri = 'https://oauth.userapp.io/';
+          }
+        }
+
         self.set('loading', true);
 
         UserApp.OAuth.getAuthorizationUrl({ provider_id: providerId, redirect_uri: redirectUri, scopes: scopes }, function(error, result) {
@@ -421,7 +452,23 @@
               self.set('error', error);
               self.set('loading', false);
             } else {
-               window.location.href = result.authorization_url;
+              if (UserApp.oauthHandler) {
+                UserApp.oauthHandler(result.authorization_url, function(token) {
+                  if (token) {
+                    self.get('user').loginWithToken(token).then(function(user) {
+                      self.send('loginSucceeded', user);
+                      self.set('loading', false);
+                    }, function(error) {
+                      self.set('error', error);
+                      self.set('loading', false);
+                    });
+                  } else {
+                    self.set('loading', false);
+                  }
+                });
+              } else {
+                window.location.href = result.authorization_url;
+              }
             }
         });
       }
